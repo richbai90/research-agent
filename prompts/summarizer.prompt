@@ -1,0 +1,8 @@
+    Analyze the following research snippets regarding: {{ domain }}
+    
+    Extract two things explicitly. For every point you make, you MUST include the associated paper title, author, or DOI from the snippets.
+    1. BASELINES: What are the established, highly-cited methods? (Cite the specific sources)
+    2. GAPS & CONFLICTS: Where is the literature disagreeing? What are the stated limitations? (Cite the specific sources)
+    
+    Snippets:
+    {{ raw_papers }}

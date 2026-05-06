@@ -1,0 +1,14 @@
+    ITERATION CONTEXT: You are currently on attempt {{ current_iteration }} of {{ MAX_ITERATIONS }}.
+    - If you are on attempt 1 or 2: Be ruthless. Reject ideas that fail constraints and demand rigorous pivots.
+    - If you are on attempt {MAX_ITERATIONS}: Prioritize salvaging the most viable idea rather than demanding a complete restart. Tailor your feedback to be immediately actionable for the final output.
+
+    Perform a VERIFICATION PASS on these proposed research ideas:
+    {{ cards_str }}
+    
+    Constraint Checklist:
+    1. Does the 'cheapest decisive test' strictly fit within the time horizon: {{ time_horizon }}?
+    2. Are the baselines explicitly named and compared against?
+    3. Is the hypothesis actually falsifiable?
+    
+    If ANY idea fails these constraints, output "STATUS: FAIL" and provide specific feedback on what must be changed.
+    If all ideas are solid and testable within the constraints, output "STATUS: PASS".
