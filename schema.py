@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import TypedDict, List, Literal
+from typing import TypedDict, List, Literal, Annotated
+import operator
 
 
 class IdeaCard(BaseModel):
@@ -33,13 +34,16 @@ class GenerationOutput(BaseModel):
     )
 
 
-class ResearchState(TypedDict):
+class GenericState(TypedDict):
     domain: str
-    optimized_query: str
+    feedback: str
     settings: dict
+    iteration: int
+    status: Literal["continue", "loop", "final"]
+
+
+class ResearchState(GenericState):
+    optimized_query: str
     raw_papers: str
     gaps_and_baselines: str
     idea_cards: List[dict]
-    feedback: str
-    iteration: int
-    status: Literal["continue", "loop", "final"]
