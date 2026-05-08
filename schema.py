@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field
-from typing import TypedDict, List, Literal, Annotated
 import operator
+from typing import Annotated, List, Literal, TypedDict
+
+from pydantic import BaseModel, Field
+from streamlit.runtime.uploaded_file_manager import UploadedFile
 
 
 class IdeaCard(BaseModel):
@@ -46,4 +48,5 @@ class ResearchState(GenericState):
     optimized_query: str
     raw_papers: str
     gaps_and_baselines: str
-    idea_cards: List[dict]
+    idea_cards: list[dict]
+    context_files: list[UploadedFile]

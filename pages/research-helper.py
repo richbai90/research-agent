@@ -1,6 +1,11 @@
-import streamlit as st
 import asyncio
+
+import streamlit as st
+from streamlit.elements.widgets.file_uploader import AcceptMultipleFiles
+from streamlit.runtime.uploaded_file_manager import UploadedFile
+
 from agent import graph
+from schema import ResearchState
 
 st.set_page_config(page_title="Fail-Fast Research Agent", layout="wide")
 
@@ -43,7 +48,7 @@ def dict_to_markdown(idea_cards: list, summary: str) -> str:
     return md
 
 
-async def run_agent_async(initial_state: dict, status_container):
+async def run_agent_async(initial_state: ResearchState, status_container):
     """Executes the async LangGraph and updates the UI with progress."""
     # Keep a running dictionary of the complete state so we don't drop the idea_cards
     full_state = initial_state.copy()
@@ -99,11 +104,8 @@ with st.sidebar:
         "Time Horizon for Killer Test", ["2 hours", "1 day", "1 week", "1 month"]
     )
 
-    st.subheader("Resource Boundaries")
-    hardware = st.text_input(
-        "Hardware Access", value="Single local GPU (RTX 4090), No cluster access"
-    )
-    simulation = st.text_input("Simulation/EDA Access", value="Python/PyTorch, OpenEB")
+    context_files: list[UploadedFile] | None = st.file_uploader("Upload files to add additional context", type=["image", "text", "pdf"], accept_multiple_files=True, max_upload_size=50)
+
 
     run_button = st.button("Generate Ideas", type="primary", use_container_width=True)
 
@@ -112,16 +114,22 @@ if run_button:
         st.error("Please enter a research domain.")
         st.stop()
 
-    initial_state = {
+    initial_state: ResearchState = {
         "domain": domain,
         "settings": {
             "TARGET OUTPUT COUNT": target_count,
             "TIME HORIZON FOR KILLER TEST": time_horizon,
-            "RESOURCE BOUNDARY": f"Hardware: {hardware} | Simulation: {simulation}",
         },
+        "feedback": "",
+        "gaps_and_baselines": "",
+        "idea_cards": [],
+        "optimized_query": "",
+        "raw_papers": "",
         "iteration": 0,
+        "context_files": context_files or [], 
         "status": "continue",
     }
+
 
     st.divider()
     status_container = st.container()

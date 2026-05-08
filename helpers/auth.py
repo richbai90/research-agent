@@ -1,3 +1,10 @@
+import asyncio
+import os
+
+from dotenv import set_key
+from playwright.async_api import async_playwright
+
+
 async def extract_token_via_browser() -> str:
     """Headlessly extracts the Scite token using a persistent browser session."""
     print("\n[Auth] Launching Playwright to extract Scite token...")

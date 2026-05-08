@@ -1,6 +1,7 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
+
+from helpers.template import generate_messages, render_prompt
 from schema import ResearchState
-from helpers.template import render_prompt
 
 
 async def orchestrator_node(state: ResearchState):
@@ -11,16 +12,22 @@ async def orchestrator_node(state: ResearchState):
 
     MAX_ITERATIONS = 4
     current_iteration = state.get("iteration", 1)
+    domain = state.get("domain", "Not Provided. Return FAIL")
+    gaps_and_baselines = state.get("gaps_and_baselines", "")
 
     prompt = render_prompt(
         "orchestrator.prompt",
         current_iteration=current_iteration,
-        max_iterations=MAX_ITERATIONS,
+        MAX_ITERATIONS=MAX_ITERATIONS,
         cards_str=cards_str,
         time_horizon=time_horizon,
+        domain=domain,
+        gaps_and_baselines=gaps_and_baselines,
     )
 
-    evaluation = await llm_flash.ainvoke(prompt)
+    messages = generate_messages(prompt)
+
+    evaluation = await llm_flash.ainvoke(messages)
     content = evaluation.content
 
     if "STATUS: FAIL" in content:

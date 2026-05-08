@@ -1,8 +1,9 @@
 import os
+
 import httpx
 
-from tools.base import BaseTool
 from helpers.auth import extract_token_via_browser, invalidate_token
+from tools.base import BaseTool
 
 
 class SciteMCPTool(BaseTool):

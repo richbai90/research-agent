@@ -1,13 +1,14 @@
 from langchain_anthropic import ChatAnthropic
+
+from helpers.template import generate_messages, render_prompt
 from schema import ResearchState
-from helpers.template import render_prompt
 
 
 async def hallucination_detector(state: ResearchState):
     """Final pipeline check to ensure Claude doesn't catch Gemini hallucinating literature."""
     print("\n[Reviewer] Claude is verifying cards against ground-truth literature...")
 
-    llm_claude = ChatAnthropic(model="claude-3-5-sonnet-latest")
+    llm_claude = ChatAnthropic(model_name="claude-3-5-sonnet-latest", timeout=100, stop=None)
 
     cards_str = "\n".join([str(c) for c in state.get("idea_cards", [])])
     current_iteration = state.get("iteration", 0)
@@ -21,7 +22,9 @@ async def hallucination_detector(state: ResearchState):
         cards_str=cards_str,
     )
 
-    evaluation = await llm_claude.ainvoke(prompt)
+    messages = generate_messages(prompt)
+
+    evaluation = await llm_claude.ainvoke(messages)
     content = evaluation.content
 
     # The prompt guarantees one of these strings will be printed at the top
